@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem, QDialog, QVBoxLayout
 from PyQt6.QtGui import QAction
 import sys
 import sqlite3
@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
 
         # Add subitems to menus
         add_student_action = QAction("Add Student", self)
+        add_student_action.triggered.connect(self.insert)
         file_menu_item.addAction(add_student_action)
 
         about_action = QAction("About", self)
@@ -28,7 +29,6 @@ class MainWindow(QMainWindow):
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
         self.resize(400, self.height())
-
 
 
     def load_data(self):
@@ -46,7 +46,59 @@ class MainWindow(QMainWindow):
 
         connection.close()
 
+    
+    def insert(self):
+        dialog = InsertDialog()
+        dialog.exec()
+
+
+class InsertDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Add Student")
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        # Student Information
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText("Student's name")
+        layout.addWidget(self.student_name)
         
+        self.course_name = QComboBox()
+        courses = ["Biology", "Math", "Astronomy", "Physics"]
+        self.course_name.addItems(courses)
+        layout.addWidget(self.course_name)
+
+        # Add mobile widget
+        self.mobile = QLineEdit()
+        self.mobile.setPlaceholderText("Student's mobile number")
+        layout.addWidget(self.mobile)
+
+
+        # Add submit button
+        submit_button = QPushButton("Submit")
+        submit_button.clicked.connect(self.add_student)
+        layout.addWidget(submit_button)
+
+        self.setLayout(layout)
+
+
+    def add_student(self):
+        name = self.student_name.text()
+        course = self.course_name.itemText(self.course_name.currentIndex())
+        mobile = self.mobile.text()
+
+        connection = sqlite3.connect("./database.db")
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO students (name, course, mobile) VALUES (?, ?, ?)", (name, course, mobile))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+        main_window.load_data()
+
 
 app = QApplication(sys.argv)
 main_window = MainWindow()
@@ -54,4 +106,4 @@ main_window.load_data()
 main_window.show()
 sys.exit(app.exec())
 
-# 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
+# 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
