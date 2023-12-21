@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem, QDialog, QVBoxLayout
-from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem, QDialog, QVBoxLayout, QToolBar
+from PyQt6.QtGui import QAction, QIcon
 import sys
 import sqlite3
 
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
 
         # Add subitems to menus
         # *Add student on file menu item
-        add_student_action = QAction("Add Student", self)
+        add_student_action = QAction(QIcon("./icons/add.png"), "Add Student", self)
         add_student_action.triggered.connect(self.insert)
         file_menu_item.addAction(add_student_action)
 
@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         about_action.setMenuRole(QAction.MenuRole.NoRole)
 
         # *Add search on edit menu item
-        search_action = QAction("Search", self)
+        search_action = QAction(QIcon("./icons/search.png"),"Search", self)
         search_action.triggered.connect(self.search)
         edit_menu_item.addAction(search_action)
         search_action.setMenuRole(QAction.MenuRole.NoRole)
@@ -38,8 +38,14 @@ class MainWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels(("ID", "Name", "Course", "Mobile"))
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
-        self.resize(400, self.height())
+        self.resize(500, self.height())
 
+        # *Creating toolbar
+        toolbar = QToolBar()
+        toolbar.setMovable(True)
+        self.addToolBar(toolbar)
+        toolbar.addAction(add_student_action)
+        toolbar.addAction(search_action)
 
     def load_data(self):
         connection = sqlite3.connect("./database.db")
