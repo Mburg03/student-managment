@@ -12,15 +12,25 @@ class MainWindow(QMainWindow):
 
         file_menu_item = self.menuBar().addMenu("&File")
         help_menu_item = self.menuBar().addMenu("&Help")
+        edit_menu_item = self.menuBar().addMenu("&Edit")
 
         # Add subitems to menus
+        # *Add student on file menu item
         add_student_action = QAction("Add Student", self)
         add_student_action.triggered.connect(self.insert)
         file_menu_item.addAction(add_student_action)
 
+        # *Add about on help menu item
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
         about_action.setMenuRole(QAction.MenuRole.NoRole)
+
+        # *Add search on edit menu item
+        search_action = QAction("Search", self)
+        search_action.triggered.connect(self.search)
+        edit_menu_item.addAction(search_action)
+        search_action.setMenuRole(QAction.MenuRole.NoRole)
+
 
         # Creating table
         self.table = QTableWidget()
@@ -49,6 +59,11 @@ class MainWindow(QMainWindow):
     
     def insert(self):
         dialog = InsertDialog()
+        dialog.exec()
+
+
+    def search(self):
+        dialog = SearchDialog()
         dialog.exec()
 
 
@@ -98,6 +113,33 @@ class InsertDialog(QDialog):
         cursor.close()
         connection.close()
         main_window.load_data()
+
+
+class SearchDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Search Student")
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        # Student's Name
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText("Student's name")
+        layout.addWidget(self.student_name)
+        
+        # Add search button
+        search_button = QPushButton("Search")   
+        search_button.clicked.connect(self.search_student)
+        layout.addWidget(search_button)
+
+        self.setLayout(layout)
+
+
+    def search_student(self):
+        
+        pass
 
 
 app = QApplication(sys.argv)
