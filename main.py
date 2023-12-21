@@ -138,7 +138,7 @@ class SearchDialog(QDialog):
 
 
     def search_student(self):
-        
+
         pass
 
 
@@ -148,4 +148,4 @@ main_window.load_data()
 main_window.show()
 sys.exit(app.exec())
 
-# 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
+# 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
