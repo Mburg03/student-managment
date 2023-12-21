@@ -55,6 +55,19 @@ class MainWindow(QMainWindow):
             self.table.setItem(row_number, 3, QTableWidgetItem(str(row_data[3])))
 
         connection.close()
+    
+    
+    def load_specific_student(self, results):
+        enumerated_result = enumerate(results)
+        self.table.setRowCount(0)
+
+        for row_number, row_data in enumerated_result:
+            self.table.insertRow(row_number)
+            self.table.setItem(row_number, 0, QTableWidgetItem(str(row_data[0])))
+            self.table.setItem(row_number, 1, QTableWidgetItem(str(row_data[1])))
+            self.table.setItem(row_number, 2, QTableWidgetItem(str(row_data[2])))
+            self.table.setItem(row_number, 3, QTableWidgetItem(str(row_data[3])))
+
 
     
     def insert(self):
@@ -138,8 +151,16 @@ class SearchDialog(QDialog):
 
 
     def search_student(self):
+        connection = sqlite3.connect("./database.db")
+        cursor = connection.cursor()
+        name = self.student_name.text()
+        cursor.execute("SELECT * FROM students WHERE name =?", (name,))
+        results = cursor.fetchall()
 
-        pass
+        connection.commit()
+        cursor.close()
+        connection.close()
+        main_window.load_specific_student(results)
 
 
 app = QApplication(sys.argv)
