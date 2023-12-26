@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem, QDialog, QVBoxLayout, QToolBar, QStatusBar
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdit, QGridLayout, QPushButton, QCheckBox, QComboBox, QTableWidget, QMainWindow, QTableWidgetItem, QDialog, QVBoxLayout, QToolBar, QStatusBar, QMessageBox
 from PyQt6.QtGui import QAction, QIcon
 import sys
 import sqlite3
@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         search_action.triggered.connect(self.search)
         edit_menu_item.addAction(search_action)
         search_action.setMenuRole(QAction.MenuRole.NoRole)
+        about_action.triggered.connect(self.about)
 
 
         # Creating table
@@ -123,6 +124,11 @@ class MainWindow(QMainWindow):
     def delete(self):
         dialog = DeleteDialog()
         dialog.exec()
+
+    
+    def about(self):
+        about_dialog = AboutDialog()
+        about_dialog.exec()
 
 
 class InsertDialog(QDialog):
@@ -321,10 +327,26 @@ class DeleteDialog(QDialog):
         main_window.load_data()
         self.close()
 
+        confirmation_widget = QMessageBox()
+        confirmation_widget.setWindowTitle("Success")
+        confirmation_widget.setText("Student deleted successfully!")
+        confirmation_widget.exec()
+
 
     def exit_dialog(self):
         self.close()
 
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("About")
+        about_content = """
+        This app was created during my python course. 
+        Feel free to modify and reuse this app.
+        Thanks for using it! 🫶🏻
+        """
+        self.setText(about_content)
 
 
 app = QApplication(sys.argv)
@@ -333,4 +355,4 @@ main_window.load_data()
 main_window.show()
 sys.exit(app.exec())
 
-# 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
+# 
