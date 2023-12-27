@@ -2,6 +2,11 @@ from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QLineEdi
 from PyQt6.QtGui import QAction, QIcon
 import sys
 import sqlite3
+ 
+
+def connect_to_database(database_filename="./database.db"):
+    connection = sqlite3.connect(database_filename)
+    return connection
 
 
 class MainWindow(QMainWindow):
@@ -79,7 +84,7 @@ class MainWindow(QMainWindow):
 
 
     def load_data(self):
-        connection = sqlite3.connect("./database.db")
+        connection = connect_to_database()
         result = connection.execute("SELECt * FROM students")
         enumerated_result = enumerate(result)
         self.table.setRowCount(0)
@@ -169,7 +174,7 @@ class InsertDialog(QDialog):
         course = self.course_name.itemText(self.course_name.currentIndex())
         mobile = self.mobile.text()
 
-        connection = sqlite3.connect("./database.db")
+        connection = connect_to_database()
         cursor = connection.cursor()
         cursor.execute("INSERT INTO students (name, course, mobile) VALUES (?, ?, ?)", (name, course, mobile))
 
@@ -202,7 +207,7 @@ class SearchDialog(QDialog):
 
 
     def search_student(self):
-        connection = sqlite3.connect("./database.db")
+        connection = connect_to_database()
         cursor = connection.cursor()
         name = self.student_name.text()
         cursor.execute("SELECT * FROM students WHERE name =?", (name,))
@@ -269,7 +274,7 @@ class EditDialog(QDialog):
         new_course = self.new_course_name.itemText(self.new_course_name.currentIndex())
         new_mobile = self.new_mobile.text()
 
-        connection = sqlite3.connect("./database.db")
+        connection = connect_to_database()
         cursor = connection.cursor()
 
         cursor.execute("""
@@ -311,7 +316,7 @@ class DeleteDialog(QDialog):
 
     
     def delete_student(self):
-        connection = sqlite3.connect("./database.db")
+        connection = connect_to_database()
         cursor = connection.cursor()
 
         index = main_window.table.currentRow()
@@ -354,5 +359,3 @@ main_window = MainWindow()
 main_window.load_data()
 main_window.show()
 sys.exit(app.exec())
-
-# 
